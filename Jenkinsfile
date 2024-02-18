@@ -50,6 +50,16 @@ pipeline {
 		sshPublisher(publishers: [sshPublisherDesc(configName: 'Kubernetes_Cluster', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'kubectl apply -f kubernetesdeploy.yaml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.yaml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
 		       }
             }
-    	}
-    }
-}
+              post {
+                success {
+                  sh "echo 'Send mail on Success'"
+					mail bcc: 'suvarnabilgundi@gmail.com', body: 'The Job Status', cc: 'suvarnabilgundi@gmail.com', from: '', replyTo: '', subject: 'Deployment to Kubernetes', to: 'suvarnabilgundi@gmail.com,suvarnabilgundi@gmail.com,suvarnabilgundi@gmail.com'
+                }
+                failure {
+                  sh "echo 'Send mail on failure'"
+					mail bcc: 'suvarnabilgundi@gmail.com', body: 'The Job Status', cc: 'suvarnabilgundi@gmail.com', from: '', replyTo: '', subject: 'Deployment to Kubernetes', to: 'suvarnabilgundi@gmail.com,suvarnabilgundi@gmail.com,suvarnabilgundi@gmail.com'
+                }
+            }
+        }
+     }
+ }      
