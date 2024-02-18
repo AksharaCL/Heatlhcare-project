@@ -27,9 +27,9 @@ pipeline {
        stage("Docker build"){
             steps {
 				sh 'docker version'
-				sh "docker build -t suvarnab/healthapp-eta-app:${BUILD_NUMBER} ."
+				sh "docker build -t suvarnab/health-care-app:${BUILD_NUMBER} ."
 				sh 'docker image list'
-				sh "docker tag suvarnab/healthapp-eta-app:${BUILD_NUMBER} suvarnab/bankapp-eta-app:latest"
+				sh "docker tag suvarnab/health-care-app:${BUILD_NUMBER} suvarnab/health-care-app:latest"
             }
         }
 		stage('Login2DockerHub') {
@@ -41,13 +41,13 @@ pipeline {
 		stage('Push2DockerHub') {
 
 			steps {
-				sh "docker push suvarnab/bankapp-eta-app:latest"
+				sh "docker push suvarnab/health-care-app:latest"
 			}
 		}
-        stage('Deploy to Kubernetes Dev Environment') {
+        stage('Deploy to Kubernetes') {
             steps {
 		script {
-		sshPublisher(publishers: [sshPublisherDesc(configName: 'Kubernetes', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'kubectl apply -f kubernetesdeploy.yaml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.yaml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+		sshPublisher(publishers: [sshPublisherDesc(configName: 'Kubernetes_Cluster', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'kubectl apply -f kubernetesdeploy.yaml', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.yaml')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
 		       }
             }
     	}
